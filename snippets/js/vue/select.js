@@ -7,4 +7,4 @@ Vue.component('Sel', {
       </select>
     </span>
   `
-})
+});
