@@ -6,8 +6,8 @@ from pyppeteer import launch
 
 async def func():
     url = 'https://...'
-    browser = await launch()
-    page = await browser.newPage({'headless': True})
+    browser = await launch({'headless': False})
+    page = await browser.newPage()
     await page.setCookie(*[
         dict(name=c.name, value=c.value, domain=c.domain)
         for c in get_jar() if urlparse(url).hostname in c.domain
