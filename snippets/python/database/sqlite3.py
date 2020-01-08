@@ -3,5 +3,5 @@ import sqlite3
 connection = sqlite3.connect('...')
 c = connection.cursor()
 c.execute("select * from ...")
-cookies = c.fetchall()
+records = c.fetchall()
 c.close()
