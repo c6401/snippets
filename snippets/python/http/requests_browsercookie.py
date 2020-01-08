@@ -3,4 +3,6 @@ import browsercookie
 
 _COOKIES = browsercookie.firefox()
 
-requests.get('https://', cookies=_COOKIES)
+response = requests.get('https://', cookies=_COOKIES)
+
+response.text
