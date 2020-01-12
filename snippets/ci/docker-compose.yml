@@ -1,7 +1,0 @@
-version: "2.0"
-services:
-  app:
-    container_name: app
-    build:  Dockerfile
-    volumes:
-      - ./:/opt/app
