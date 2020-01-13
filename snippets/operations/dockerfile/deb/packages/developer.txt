@@ -1,4 +1,5 @@
 curl
+netcat
 socat
 sudo
 tcpdump
