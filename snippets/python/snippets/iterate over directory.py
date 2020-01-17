@@ -1,5 +1,5 @@
 from pathlib import Path
 
-paths = Path('some dir').glob('**/*.txt')
+paths = Path('.').glob('**/*.txt')
 for path in paths:
-     path
+     print(path)
