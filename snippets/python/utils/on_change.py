@@ -1,8 +1,10 @@
 import os
+from functools import wraps
 from time import sleep
 
 def on_change(filename, interval=1):
     def decorator(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
             stamp = None
             while True:
