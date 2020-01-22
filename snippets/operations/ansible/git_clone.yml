@@ -1,4 +1,4 @@
     - name:
       git:
-        repo:
-        dest:
+        dest: '{{ PROJECT_DIR }}'
+        repo: git@github.com:....git
