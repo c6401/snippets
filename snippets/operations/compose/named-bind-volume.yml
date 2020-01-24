@@ -1,0 +1,6 @@
+volumes:
+  my-volume:
+    driver_opts:
+       type: none
+       device: /.../...
+       o: bind
