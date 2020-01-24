@@ -1,0 +1,29 @@
+<script src="https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.js"></script>
+
+<div id="my-app">
+  <input v-model='q'><br><Json :json="json" :q="q"/>
+</div>
+
+<script>
+Vue.component('Json', { template: `<span>
+  <input type="checkbox" v-if="json instanceof Object" v-model="on">
+  <span v-if="json instanceof Object">{
+    <div v-if="on" style="margin-left: 20px">
+      <span v-for="(v, k) in json">{{ k }}: <Json :json="v" :q="q"/>, <br></span>
+    </div>
+  }</span>
+  <span v-else-if="typeof json  === 'string'">
+    <span v-if="json.length < 200">"{{ json }}"</span>
+    <span v-else><details>"{{ json }}"</details></span>
+  </span>
+  <span v-else>{{ json }}</span>
+</span>`,
+  data: () => ({ on: false }),
+  props: ['json', 'q'],
+  watch: { q: {
+      handler() { this.on = this.q && JSON.stringify(this.json).toLowerCase().includes(this.q.toLowerCase()); },
+      immediate: true,
+  } },
+})
+var app = new Vue({ el: '#my-app', data: {json, q: ''} })
+</script>
