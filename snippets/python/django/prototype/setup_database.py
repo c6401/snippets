@@ -1,3 +1,6 @@
+# !mkdir -p /tmp/myapp/myapp
+# %cd /tmp/myapp
+
 import os
 import sys
 import django
@@ -23,14 +26,15 @@ settings.configure(
         # },
     },
     INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
+        # 'django.contrib.auth',
+        # 'django.contrib.contenttypes',
         # 'rest_framework',
         # 'test.django',
         # 'django_filters',
+        # 'myapp',
     ),
-    ROOT_URLCONF=sys.modules[__name__],
-    ALLOWED_HOSTS = ['*'],
+    # ROOT_URLCONF=sys.modules[__name__],
+    # ALLOWED_HOSTS = ['*'],
     DEBUG=True,
     # TEMPLATES = [
     #     {
