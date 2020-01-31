@@ -1,4 +1,4 @@
-#!/usr/bin/env -S ansible-playbook --step
+#!/usr/bin/env -S ANSIBLE_STDOUT_CALLBACK=debug ansible-playbook --step
 - hosts:
   user:
   # gather_facts: no
