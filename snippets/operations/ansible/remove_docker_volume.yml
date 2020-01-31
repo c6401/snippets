@@ -1,0 +1,4 @@
+    - name: remove a volume
+      docker_volume:
+        name: ...
+        state: absent
