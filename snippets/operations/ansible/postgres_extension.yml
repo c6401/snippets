@@ -1,0 +1,9 @@
+    - name: Adds postgis extension
+      postgresql_ext:
+        name: postgis
+        db:
+
+        login_host: localhost
+        port: 5432
+        login_user: postgres
+        login_password: postgres
