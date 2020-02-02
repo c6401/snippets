@@ -1,0 +1,10 @@
+    - name: restore db
+      postgresql_db:
+        name:
+        state: restore
+        target:
+
+        login_host: localhost
+        port: 5432
+        login_user: postgres
+        login_password: postgres
