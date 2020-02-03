@@ -1,0 +1,15 @@
+    - name: create docker-compose.yaml
+      copy:
+        dest: docker-compose.yaml
+        content: |
+          version: '2'
+          services:
+            central_panel:
+              build:
+                context: .
+              container_name: app
+              command: $CMD
+              ports:
+                - '8080:8080'
+              volumes:
+                - ./app:/home/app
