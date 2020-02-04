@@ -1,0 +1,14 @@
+    - name: create dockerfile
+      copy:
+        dest: Dockerfile
+        content: |
+          FROM ubuntu:18.04
+
+          ENV DEBIAN_FRONTEND noninteractive
+
+          RUN apt-get update &&\
+              apt-get install -y --no-install-recommends ...
+
+          RUN useradd -ms /bin/bash --uid {{ ansible_user_uid }} app
+          WORKDIR /home/app
+          USER app
