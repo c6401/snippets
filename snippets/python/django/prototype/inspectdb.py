@@ -1,7 +1,7 @@
 import os
 import sys
 from io import StringIO
-from types import SimpleNamespac
+from types import SimpleNamespace
 from urllib.parse import urlparse
 
 import django
