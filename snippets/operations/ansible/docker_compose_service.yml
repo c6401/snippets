@@ -2,3 +2,4 @@
       docker_service:
         project_name:
         definition:
+          ...
