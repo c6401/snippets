@@ -1,6 +1,6 @@
 # from django.core import management
-# management.call_command('makemigrations', 'tmp')
-# management.call_command('migrate', 'tmp')
+# management.call_command('makemigrations', 'myapp')
+# management.call_command('migrate', 'myapp')
 
 from django.db import connection
 
