@@ -1,3 +1,3 @@
-import urllib
+from urllib.parse import quote
 
-urllib.parse.quote('')
+quote('')
