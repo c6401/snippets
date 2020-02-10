@@ -3,3 +3,4 @@ netcat
 socat
 sudo
 tcpdump
+vim
