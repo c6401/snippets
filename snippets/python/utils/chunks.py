@@ -1,4 +1,4 @@
-def in_chunks(seq, size):
+def chunks(seq, size):
     chunk = []
     for n, item in enumerate(seq, 1):
         chunk.append(item)
@@ -6,4 +6,4 @@ def in_chunks(seq, size):
             yield chunk
             chunk = []
     if chunk:
-        yield chunk 
+        yield chunk
