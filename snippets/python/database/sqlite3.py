@@ -5,3 +5,4 @@ c = connection.cursor()
 c.execute("select * from ...")
 records = c.fetchall()
 c.close()
+# c.description
