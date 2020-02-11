@@ -1,4 +1,5 @@
     - name: start service
       docker_service:
         project_src: .
+        # services: 
       tags: service
