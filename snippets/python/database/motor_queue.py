@@ -1,31 +1,28 @@
 import asyncio
 import logging
+from pymongo.cursor import CursorType
+
 # create mongo
 
-async def queue(consumer: str, topic: str, query={}, interval=5 * 60):
-    offset = mongo.common.offset
-    last = await offset.find_one({'consumer': consumer, 'topic': topic})
+collection = await mongo.bd.create_collection('...', capped=True, size=1000000)
+
+async def queue(db, consumer: str, topic: str, query={}, interval=5 * 60):
+    offsets = db.offsets
+    offset = await offsets.find_one({'consumer': consumer, 'topic': topic})
     query = query.copy()
-    if last:
-        query.update({'_id': {'$gt': last['offset']}})
-    collection = mongo.common[topic]
+    if offset:
+        query.update({'_id': {'$gt': offset['offset']}})
+
+    collection = db[topic]
+    cursor = collection.find(query, cursor_type=CursorType.TAILABLE)
 
     while True:
-        cursor = collection.find(query)
-        logging.info(f'{consumer} is iterating over {topic}')
-        result = None
-        results = await cursor.to_list(length=100)
-        for result in results:
+        async for result in cursor:
             yield result
-
-            await offset.update_one(
+            await offsets.update_one(
                 {'consumer': consumer, 'topic': topic},
                 {'$set': {'offset': result['_id']}},
                 True,
             )
-        if result:
-            query.update({'_id': {'$gt': result['_id']}})
-
-        if not results:
-            logging.info(f'{consumer} to {topic} sub is going to sleep')
-            await asyncio.sleep(interval)
+        logging.info(f'{consumer} to {topic} sub is going to sleep')
+        await asyncio.sleep(interval)
