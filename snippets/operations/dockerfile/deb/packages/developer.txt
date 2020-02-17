@@ -4,3 +4,4 @@ socat
 sudo
 tcpdump
 vim
+iputils-ping
