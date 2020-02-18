@@ -1,7 +1,8 @@
 curl
+iputils-ping
+net-tools
 netcat
 socat
 sudo
 tcpdump
 vim
-iputils-ping
