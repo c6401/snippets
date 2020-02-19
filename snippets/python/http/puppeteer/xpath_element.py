@@ -1,1 +1,1 @@
-element = (await page.xpath('//*[contains(text(), "text"'))[0]
+element = (await page.xpath('//*[contains(text(), "text")]'))[0]
