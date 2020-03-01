@@ -29,14 +29,23 @@ settings.configure(
     INSTALLED_APPS = (
         # 'django.contrib.auth',
         # 'django.contrib.contenttypes',
+        # 'django.contrib.sessions',
+        # 'django.contrib.messages',
+        # 'django.contrib.admin',
+        # 'django.contrib.staticfiles',
         # 'rest_framework',
         # 'test.django',
         # 'django_filters',
         # 'myapp',
     ),
+    # MIDDLEWARE = (
+    #     'django.contrib.sessions.middleware.SessionMiddleware',
+    #     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #     'django.contrib.messages.middleware.MessageMiddleware',
+    # ),
     # ROOT_URLCONF=sys.modules[__name__],
     # ALLOWED_HOSTS = ['*'],
-    DEBUG=True,
+    # STATIC_URL = '/static/',
     # TEMPLATES = [
     #     {
     #         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -53,5 +62,6 @@ settings.configure(
     #     },
     # ],
     # SECRET_KEY = '!@#$%^&*()',
+    DEBUG=True,
 )
 django.setup()
