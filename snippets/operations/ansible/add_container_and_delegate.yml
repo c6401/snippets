@@ -1,0 +1,8 @@
+    - name: add container to inventory
+      add_host:
+        name: [container-name]
+        ansible_connection: docker
+
+    - name: run command in container
+      delegate_to: [container-name]
+      raw: bash
