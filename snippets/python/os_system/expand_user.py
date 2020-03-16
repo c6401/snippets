@@ -1,5 +1,5 @@
-import os
+from pathlib import Path
 
 path = '~/'
 
-full_path = os.path.expanduser(path)
+full_path = Path(path).expanduser()
