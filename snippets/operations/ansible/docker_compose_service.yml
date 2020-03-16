@@ -1,5 +1,5 @@
     - name:
-      docker_service:
+      docker_compose:
         project_name:
         definition:
           ...
