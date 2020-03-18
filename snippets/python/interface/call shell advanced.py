@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-def sh(command, capture=True, pipe=None, detached=False, cwd=None, **kwargs):
+def cmd(command, capture=True, pipe=None, detached=False, cwd=None, **kwargs):
     if capture:
         kwargs.update(stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if not sys.stdin.isatty():
