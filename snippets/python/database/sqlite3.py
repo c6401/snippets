@@ -1,8 +1,6 @@
 import sqlite3
 
-connection = sqlite3.connect('...')
-c = connection.cursor()
-c.execute("select * from ...")
-records = c.fetchall()
-c.close()
-# c.description
+with sqlite3.connect('...') as connection:
+    cursor = connection.execute('select * from ...')
+    records = cursor.fetchall()
+#cursor.description
