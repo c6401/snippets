@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  app:
+    container_name: app
+    build: .
+      # context: .
+      # dockerfile: ./Dockerfile
+      # args:  # TODO define in .env
+      #   UID: $UID
+      #   GID: $GID
+    volumes:
+      - ./:/opt/app
+    ports:
+      - "8000:8000"
