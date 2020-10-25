@@ -1,11 +1,7 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
-async def asyncronously(func, *args, **kwargs):
-    def wrapper():
-        return func(*args, **kwargs)
-    
-    with ThreadPoolExecutor(max_workers=1) as executor:
+def run_in_thread(func, _workers=1, *args, **kwargs):
+    with ThreadPoolExecutor(max_workers=_workers) as executor:
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(executor, wrapper)
-        return await future
+        return loop.run_in_executor(executor, lambda: func(*args, **kwargs))
