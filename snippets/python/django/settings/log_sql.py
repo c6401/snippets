@@ -18,4 +18,4 @@ LOGGING = {
             'handlers': ['console'],
         }
     },
-},
+}
