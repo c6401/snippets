@@ -1,0 +1,49 @@
+{%- macro render_mapping(item) -%}
+{%- for key, value in item.items() %}
+
+{%- endfor %}
+{%- endmacro %}
+
+
+{%- macro render_sequence(items) -%}
+{%- for value in items %}
+
+{%- endfor %}
+{%- endmacro %}
+
+
+{%- macro render_string(item) -%}
+
+{%- endmacro %}
+
+
+{%- macro render_bool(item) -%}
+
+{%- endmacro %}
+
+
+{%- macro render_number(item) -%}
+
+{%- endmacro %}
+
+
+{%- macro render_none(item) -%}
+
+{%- endmacro %}
+
+
+{%- macro render(item) -%}
+  {%- if item is mapping %}
+    {{- render_mapping(item) }}
+  {%- elif item is iterable and item is not string %}
+    {{- render_sequence(item) }}
+  {%- elif item is string %}
+    {{- render_string(item) }}
+  {%- elif item in (true, false) %}
+    {{- render_bool(item) }}
+  {%- elif item is number %}
+    {{- render_number(item) }}
+  {%- elif item is none %}
+    {{- render_none(item) }}
+  {%- endif %}
+{%- endmacro %}
