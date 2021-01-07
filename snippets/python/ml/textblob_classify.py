@@ -2,9 +2,9 @@ import pickle
 
 from textblob.classifiers import NaiveBayesClassifier
 
-classifier = NaiveBayesClassifier([(..., ...), ...])
+classifier = NaiveBayesClassifier([('???', '???'), ...])
 
-classifier.update([(..., ...), ...])
+classifier.update([('???', '???'), ...])
 
 with open('...', 'wb') as f:
     pickle.dump(classifier, f)
