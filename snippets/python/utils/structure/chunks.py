@@ -1,6 +1,6 @@
-def chunks(seq, size):
+def chunks(iterable, size):
     chunk = []
-    for n, item in enumerate(seq, 1):
+    for n, item in enumerate(iterable, 1):
         chunk.append(item)
         if n % size == 0:
             yield chunk
