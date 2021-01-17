@@ -1,12 +1,8 @@
-def recursive_group(seq):
+def recursive_group(records):
     root = {}
-    for items in seq:
+    for record in records:
         node = root
-        for item in items:
-            parent = node
-            node = node.setdefault(item, {})
-            if not node:
-                parent[item] = node = {}
-        parent[item] = None
+        for value in record:
+            node = node.setdefault(value, {})
 
     return root
