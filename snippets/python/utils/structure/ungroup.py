@@ -1,7 +1,9 @@
-def ungroup(groupped):
-    if isinstance(groupped, dict):
-        for item, group in groupped.items():
+def ungroup_records(tree):
+    if isinstance(tree, dict):
+        for item, group in tree.items():
             for record in ungroup(group):
                 yield (item, *record)
     else:
-        yield (groupped,)
+        yield (tree,)
+
+# TODO rename file
