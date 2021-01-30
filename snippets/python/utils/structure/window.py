@@ -1,9 +1,9 @@
-def window(seq, size=2):
-    seq = iter(seq)
+def window(iterable, size=2):
+    seq = iter(iterable)
 
-    frame = tuple(next(seq) for i in range(size))
+    frame = tuple(next(iterable) for i in range(size))
     yield frame
 
-    for item in seq:
+    for item in iterable:
         frame = frame[1:] + (item,)
         yield frame
