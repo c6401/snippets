@@ -1,5 +1,5 @@
-def walk_tree(items, key='children'):
-    for item in items:
+def walk_tree(tree, key='children'):
+    for item in tree:
         yield item
-        if key in item:
-            yield from walk_tree(item[key], key)
+        if key in tree:
+            yield from walk_tree(tree[key], key)
