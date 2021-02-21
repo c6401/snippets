@@ -5,5 +5,3 @@ def ungroup_records(tree):
                 yield (item, *record)
     else:
         yield (tree,)
-
-# TODO rename file
