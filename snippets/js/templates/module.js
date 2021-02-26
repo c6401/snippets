@@ -1,3 +1,3 @@
-  const myModule = (function () {
-    return {}
-  })();
+const myModule = (function () {
+  return {};
+})();
