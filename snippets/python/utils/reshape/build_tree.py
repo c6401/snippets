@@ -1,24 +1,22 @@
 """
->>> build_tree([(1, 'a'), (3, 'b'), (2, 'c')])
-[{'data': 'a', 'children': [{'data': 'b', 'children': [], 'level': 3}, \
-{'data': 'c', 'children': [], 'level': 2}], 'level': 1}]
+>>> build_tree([(1, 'a'), (2, 'b'), (3, 'c'), (2, 'd')])
+[{'level': 1, 'children': [{'level': 2, 'children': [{'level': 3, \
+'children': [], 'data': 'c'}], 'data': 'b'}, {'level': 2, 'children': [], \
+'data': 'd'}], 'data': 'a'}]
 """
 
 def build_tree(pairs, factory=dict):
     """Builds nested tree from sequence of pairs: [(nest-level, data), ...]."""
-    root = siblings = children = []
+    root = children = []
     previous_level = -1  # root level
-    parents = []  # stack of parents
+    stack = []  # stack of parent nodes
 
     for level, data in pairs:
         if level > previous_level:
-            siblings = children  # prev node's children are current's siblings
-            parents.append((previous_level, children))
-        elif level < previous_level:
-            while level <= parents[-1][0]:  # child's level should be > parent's
-                parents.pop()
-            siblings = parents[-1][1]  # set siblings as parent's children
+            stack.append((previous_level, children))
+        while level <= stack[-1][0]:  # child's level should be > parent's
+            stack.pop()
         children = []
-        siblings.append(factory(level=level, children=children, data=data))
+        stack[-1][1].append(factory(level=level, children=children, data=data))
         previous_level = level
     return root
