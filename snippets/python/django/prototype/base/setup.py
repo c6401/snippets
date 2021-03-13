@@ -65,3 +65,4 @@ settings.configure(
     DEBUG=True,
 )
 django.setup()
+# %%
