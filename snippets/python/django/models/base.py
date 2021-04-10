@@ -5,3 +5,5 @@ class MyModel(models.Model):
         unique_together = [
             ('???', '???'),
         ]
+        verbose_name = 'My model'
+        verbose_name_plural = 'My models'
