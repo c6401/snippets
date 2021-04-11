@@ -13,3 +13,6 @@ if urlpatterns:
     urlpatterns[0] = mypath
 else:
     urlpatterns.append(mypath)
+
+# from django.core.management import call_command
+# call_command('collectstatic', '--noinput')
