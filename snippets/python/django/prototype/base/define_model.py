@@ -11,9 +11,9 @@ class MyModel(models.Model):
     class Meta:
         app_label = 'myapp'
 
-# from django.core import management
-# management.call_command('makemigrations', 'myapp')
-# management.call_command('migrate', 'myapp')
+# from django.core.management import call_command
+# call_command('makemigrations', 'myapp')
+# call_command('migrate', 'myapp')
 
 from django.db import connection
 
