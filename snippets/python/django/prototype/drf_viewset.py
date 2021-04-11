@@ -27,3 +27,6 @@ router.register('mymodel', MyModelViewSet)
 mypath = path('', include(router.urls))
 
 urlpatterns.append(mypath)
+
+# from django.core.management import call_command
+# call_command('collectstatic', '--noinput')
