@@ -46,6 +46,7 @@ settings.configure(
     # ROOT_URLCONF=sys.modules[__name__],
     # ALLOWED_HOSTS = ['*'],
     # STATIC_URL = '/static/',
+    # STATIC_ROOT = 'static/',
     # TEMPLATES = [
     #     {
     #         'BACKEND': 'django.template.backends.django.DjangoTemplates',
