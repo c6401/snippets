@@ -1,0 +1,14 @@
+#+BEGIN_SRC sh :results output
+ansible-playbook /dev/stdin << EOF | cat
+- hosts: raspberrypi.local
+  user: pi
+  vars:
+    ansible_become_password: raspberry
+
+  tasks:
+    - name:
+      docker_compose:
+        project_name:
+        definition:
+EOF
+#+END_SRC
