@@ -1,0 +1,4 @@
+#!/usr/bin/env -S ANSIBLE_STDOUT_CALLBACK=debug ansible-playbook --step
+- hosts: localhost
+  connection: local
+  tasks:
