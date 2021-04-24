@@ -1,0 +1,6 @@
+- name: Creates an entry like "0 0,1 * * myapp"
+  ansible.builtin.cron:
+    name:
+    minute: '0'
+    hour: '0,1'
+    job: 'myapp'
