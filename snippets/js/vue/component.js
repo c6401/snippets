@@ -1,7 +1,7 @@
 Vue.component('...', {
   template: `
-    <span>
-    </span>
+    <div>
+    </div>
   `,
   props: {
   },
