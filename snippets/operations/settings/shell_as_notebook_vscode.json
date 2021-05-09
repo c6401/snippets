@@ -1,0 +1,13 @@
+// keybindings.json
+{
+  "key": "shift+enter",
+  "command": "macros.shellExecute",
+  "when": "editorTextFocus && editorLangId == 'shellscript'"
+}
+// settings.json
+"macros": {
+  "shellExecute": [
+    "expandLineSelection",
+    "workbench.action.terminal.runSelectedText",
+    "cancelSelection"
+  ]
