@@ -2,8 +2,8 @@ import requests
 import browsercookie
 from IPython.display import HTML
 
-_COOKIES = browsercookie.firefox()
+cookies = browsercookie.firefox(cookie_file=[''])
 
-response = requests.get('https://', cookies=_COOKIES)
+response = requests.get('https://', cookies=cookies)
 
 display(response.text)
