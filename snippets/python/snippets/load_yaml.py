@@ -1,5 +1,5 @@
 from ruamel import yaml
 
-result = yaml.safe_load('''
+data = yaml.safe_load('''
 
 ''')
