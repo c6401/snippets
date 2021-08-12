@@ -11,7 +11,7 @@
             setRequestHeader.call(this, name, value);
         };
         XMLHttpRequest.prototype.send = function(body) {
-            console.log(method, url, async, user, password, headers, body)
+            console.log(method, url, async, user, password, headers, body);
             send.call(this, body);
         };
         open.call(this, method, url, async, user, password);
