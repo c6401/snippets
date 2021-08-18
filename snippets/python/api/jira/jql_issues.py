@@ -1,8 +1,8 @@
 import requests
 import browsercookie
 
-_COOKIES = browsercookie.firefox()  # chrome ?
+cookies = browsercookie.firefox()  # chrome ?
 
 API = ''
 
-response = requests.get(f'{API}/rest/api/3/search?jql=...', cookies=_COOKIES)
+response = requests.get(f'{API}/rest/api/3/search?jql=...', cookies=cookies)
