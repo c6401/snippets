@@ -2,9 +2,9 @@ import httpx
 import browsercookie
 from urllib.parse import unquote
 
-_COOKIES = browsercookie.firefox()  # chrome?
+cookies = browsercookie.firefox()  # chrome?
 
-token = unquote(next(c for c in _COOKIES if 'perekrestok.accessToken' in c.name).value)
+token = unquote(next(c for c in cookies if 'perekrestok.accessToken' in c.name).value)
 
 async with httpx.AsyncClient() as client:
     response = await client.get(
