@@ -1,8 +1,8 @@
 import requests
 import browsercookie
 
-_COOKIES = browsercookie.firefox()
+cookies = browsercookie.firefox()
 
-response = requests.get('https://', cookies=_COOKIES)
+response = requests.get('https://', cookies=cookies)
 
 response.text
