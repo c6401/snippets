@@ -1,6 +1,6 @@
 touch ~/.bashrc.whitelist
 
-function _source_rc () {
+_source_rc() {
     if grep -Fxq "$PWD" ~/.bashrc.whitelist
     then
         source .bashrc
@@ -20,7 +20,7 @@ then
     _source_rc
 fi
 
-function cd () {
+cd() {
     builtin cd "$@"
     if [ -f .bashrc ]
     then
