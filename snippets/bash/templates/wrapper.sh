@@ -1,4 +1,4 @@
-function          {
+____() {
     ____=$1
     shift
     eval $@;
