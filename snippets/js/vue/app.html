@@ -1,11 +1,14 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.js"></script>
 
 <div id='my-app'>
+  {{ test }}
 </div>
 
 <script>
 var app = new Vue({
   el: '#my-app',
-  data: {},
+  data: {
+    test: 'hello',
+  },
 });
 </script>
