@@ -11,7 +11,7 @@ Vue.component('ListFilter', {
   computed: {
     filtered() {
       return this.items.filter(item => {
-         return item.tags.toLowerCase().includes(this.filter.toLowerCase())
+         return item.name.toLowerCase().includes(this.filter.toLowerCase())
       })
     }
   },
