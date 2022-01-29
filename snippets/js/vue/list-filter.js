@@ -1,4 +1,5 @@
-Vue.component('ListFilter', {
+// <list-filter :items="[{ name: 'cherry' }, { name: 'strawberry' }, { name: 'orange' }, { name: 'apple' }]"><list-filter>
+Vue.component('list-filter', {
   template: `
     <span>
       <input type="text" v-model="filter">
@@ -11,7 +12,7 @@ Vue.component('ListFilter', {
   computed: {
     filtered() {
       return this.items.filter(item => {
-         return item.name.toLowerCase().includes(this.filter.toLowerCase())
+        return item.name.toLowerCase().includes(this.filter.toLowerCase())
       })
     }
   },
