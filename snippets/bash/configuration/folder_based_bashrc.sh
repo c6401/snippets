@@ -3,14 +3,14 @@ touch ~/.bashrc.whitelist
 _source_rc() {
     if grep -Fxq "$PWD" ~/.bashrc.whitelist
     then
-        source .bashrc
+        . .bashrc
     else
         read -p "Whitelist $PWD/.bashrc file? " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]
         then
             echo $PWD >> ~/.bashrc.whitelist
-            source .bashrc
+            . .bashrc
         fi
     fi
 }
