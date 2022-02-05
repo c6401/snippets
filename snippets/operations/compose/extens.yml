@@ -1,0 +1,6 @@
+# only in compose v2
+services:
+  web:
+    extends:
+      file: common.yml
+      service: myservice
