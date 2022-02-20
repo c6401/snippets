@@ -1,0 +1,41 @@
+---
+app:
+    Model:
+        - field: value
+---
+from django.db import migrations
+{%- for app, models in data.items() %}
+{%- for model, records in models.items() %}
+
+def create_{{ model.lower() }}_records(apps, schema_editor):
+    {{ model }} = apps.get_model('{{ app }}', '{{ model }}')
+{##}
+    {{ model.lower() }}_instances = [
+{%- for record in records %}
+        {{ model }}(
+            {%- for field, value in record.items() %}
+            {{ field }}={{ repr(value) }},
+            {%- endfor %}
+        )
+{%- endfor %}
+    ]
+
+    {{ model }}.objects.bulk_create({{ model.lower() }}_instances)
+
+{%- endfor %}
+{%- endfor %}
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('module...', 'num_mame...'),
+    ]
+
+    operations = [
+{%- for app, models in data.items() %}
+{%- for model, records in models.items() %}
+        migrations.RunPython(create_{{ model.lower() }}_records),
+{%- endfor %}
+{%- endfor %}
+    ]
