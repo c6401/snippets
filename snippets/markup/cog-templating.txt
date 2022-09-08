@@ -1,0 +1,5 @@
+[[[cog
+print(f'')
+]]]
+[[[end]]]
+cog -r -P -D a=b file
