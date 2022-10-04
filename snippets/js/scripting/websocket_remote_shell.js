@@ -15,7 +15,7 @@ function setup() {
     setTimeout(setup, 2000);
   };
   socket.onmessage = function (event) {
-    var result = evalData(event.data)
+    var result = evalData(event.data);
     socket.send(result);
   }
 }
