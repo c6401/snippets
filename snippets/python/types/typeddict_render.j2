@@ -1,0 +1,57 @@
+{% set name = 'Base' -%}
+
+{%- macro render_mapping(item, key=None) -%}
+{%- for key, value in item.items() %}
+  {%- if value is mapping %}
+    {{- render(value, key=key) }}
+
+{##}
+  {%- endif %}
+{%- endfor %}
+class {{ name }}{{ key.replace('_', ' ').title().replace(' ', '') }}(TypedDict, total=False):
+{%- for key, value in item.items() %}
+  {%- if value is mapping %}
+    {{ key }}: {{ name }}{{ key.replace('_', ' ').title().replace(' ', '') }}
+  {%- else %}
+    {{ key }}: {{ render(value) }}
+  {%- endif %}
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro render_sequence(items) -%}
+List[{{ render(items[0]) }}]
+{%- endmacro %}
+
+{%- macro render_string(item) -%}
+str
+{%- endmacro %}
+
+{%- macro render_bool(item) -%}
+bool
+{%- endmacro %}
+
+{%- macro render_number(item) -%}
+int
+{%- endmacro %}
+
+{%- macro render_none(item) -%}
+None
+{%- endmacro %}
+
+{%- macro render(item, key=None) -%}
+  {%- if item is mapping %}
+    {{- render_mapping(item, key=key) }}
+  {%- elif item is iterable and item is not string %}
+    {{- render_sequence(item) }}
+  {%- elif item is string %}
+    {{- render_string(item) }}
+  {%- elif item in (true, false) %}
+    {{- render_bool(item) }}
+  {%- elif item is number %}
+    {{- render_number(item) }}
+  {%- elif item is none %}
+    {{- render_none(item) }}
+  {%- endif %}
+{%- endmacro %}
+
+{{ render(data, key='') }}
