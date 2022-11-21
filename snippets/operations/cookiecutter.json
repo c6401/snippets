@@ -1,0 +1,6 @@
+{
+    "project_name": "Test project",
+    "author": "Anonymous",
+    "repo_name": "{{ cookiecutter.project_name|replace(' ', '_')|replace('-', '_')|lower }}",
+    "description": "{{ cookiecutter.project_name }}"
+}
