@@ -14,4 +14,9 @@ setup(
         '...',
     ],
     scripts=['...'],
+    entry_points = {
+        'console_scripts': [
+            'commandmane = package:main',
+        ],
+    },
 )
