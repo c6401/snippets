@@ -1,6 +1,7 @@
 function _localprofile () {
+  builtin cd "$@"
   if [ -f .localprofile ]; then
-    . .localprofile
+    . ./.localprofile
   fi
 }
 
