@@ -1,11 +1,11 @@
 function _localprofile () {
-  builtin cd "$@"
   if [ -f .localprofile ]; then
     . ./.localprofile
   fi
 }
 
 function cd () {
+  builtin cd "$@"
   _localprofile
 }
 
