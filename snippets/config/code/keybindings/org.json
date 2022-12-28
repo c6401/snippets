@@ -1,0 +1,35 @@
+  {
+    "key": "Tab",
+    "command": "editor.toggleFold",
+    "when": "editorTextFocus && foldingEnabled && editorLangId == 'org'"
+  },
+  {
+    "key": "ctrl+enter",
+    "command": "org.insertHeadingRespectContent",
+    "when": "editorLangId == 'org'"
+  },
+  {
+    "key": "ctrl+alt+o h",
+    "command": "-org.insertHeadingRespectContent",
+    "when": "editorLangId == 'org'"
+  },
+  {
+    "key": "shift+tab",
+    "command": "editor.foldAll",
+    "when": "editorTextFocus && foldingEnabled && editorLangId == 'org'"
+  },
+  {
+    "command": "org.demoteSubtree",
+    "key": "alt+right",
+    "when": "editorLangId == 'org'"
+  },
+  {
+    "command": "org.promoteSubtree",
+    "key": "alt+left",
+    "when": "editorLangId == 'org'"
+  },
+  {
+    "command": "org.incrementContext",
+    "key": "shift+right",
+    "when": "editorLangId == 'org'"
+  },
