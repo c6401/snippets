@@ -1,0 +1,4 @@
+  {
+    "key": "ctrl+alt+enter",
+    "command": "workbench.action.terminal.runSelectedText"
+  },
