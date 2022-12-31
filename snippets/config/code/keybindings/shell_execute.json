@@ -1,0 +1,5 @@
+  {
+    "command": "macros.shellExecute",
+    "key": "shift+enter",
+    "when": "editorTextFocus"
+  },
