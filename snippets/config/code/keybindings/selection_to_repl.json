@@ -1,0 +1,4 @@
+  {
+    "command": "editor.debug.action.selectionToRepl",
+    "key": "alt+enter"
+  },
