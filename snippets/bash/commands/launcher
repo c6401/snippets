@@ -1,2 +1,2 @@
-cmd=./$(ls | rofi -dmenu )
+cmd=./$(ls | rofi -dmenu)
 xsel | $cmd
