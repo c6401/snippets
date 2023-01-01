@@ -1,0 +1,15 @@
+"macros": {
+    "olBlockDown": [
+      "cursorHome"
+    ],
+    "shellExecute": [
+      "expandLineSelection",
+      "workbench.action.terminal.runSelectedText",
+      "cancelSelection"
+    ],
+    "replExecute": [
+      "expandLineSelection",
+      "editor.debug.action.selectionToRepl",
+      "cancelSelection"
+    ]
+  },
