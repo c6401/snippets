@@ -1,0 +1,5 @@
+@startuml mygraph
+(a) -- (b)
+(b) -- (c)
+(a) -- (c)
+@enduml
