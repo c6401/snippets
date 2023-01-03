@@ -1,0 +1,5 @@
+CREATE TABLE a_b (
+  a_id INT REFERENCES a (id) ON DELETE CASCADE,
+  b_id INT REFERENCES b (id) ON DELETE CASCADE,
+  CONSTRAINT a_b_pkey PRIMARY KEY (a_id, b_id)
+);
