@@ -1,2 +1,1 @@
-ALTER TABLE Table
-DROP COLUMN Column;
+ALTER TABLE ____ DROP COLUMN ____;
