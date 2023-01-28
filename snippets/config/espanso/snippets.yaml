@@ -1,0 +1,7 @@
+  - trigger: "/snip"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+            cmd: "cd ~/????/snippets && find . -type f | ???? | xargs cat"
