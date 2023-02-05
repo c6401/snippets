@@ -1,4 +1,4 @@
-ansible-playbook /dev/stdin << EOF
+ansible-playbook -i localhost, /dev/stdin << EOF
 - hosts: localhost
   connection: local
   tasks:
