@@ -1,3 +1,4 @@
 private/
-.mypy_cache/3.8/
+.mypy_cache/
 todo*
+.vscode/
