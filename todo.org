@@ -1,0 +1,1 @@
+* rename .jinja2 to .j2 files
