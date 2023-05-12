@@ -1,6 +1,9 @@
 def window(iterable, size=2):
     iterable = iter(iterable)
-    frame = (None, *(next(iterable) for _ in range(size-1)))
+
+    frame = tuple(next(iterable) for _ in range(size))
+    yield frame
+
     for item in iterable:
-        frame = (*frame[1:], item)
+        frame = frame[1:] + (item,)
         yield frame
