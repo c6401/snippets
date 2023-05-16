@@ -1,2 +1,3 @@
-from django import apps
-apps.apps.get_models()
+from django.apps import apps
+apps.get_models()
+# apps.get_model
