@@ -2,14 +2,14 @@ import pickle
 
 from textblob.classifiers import NaiveBayesClassifier
 
-classifier = NaiveBayesClassifier([('???', '???'), ...])
+classifier = NaiveBayesClassifier([('__sentence__', '__category__'), ...])
 
-classifier.update([('???', '???'), ...])
+classifier.update([('__sentence__', '__category__'), ...])
 
-with open('...', 'wb') as f:
+with open('classifier.pickle', 'wb') as f:
     pickle.dump(classifier, f)
 
-with open('...', 'rb') as f:
+with open('classifier.pickle', 'rb') as f:
     classifier = pickle.load(f)
 
 classifier.classify(...)
