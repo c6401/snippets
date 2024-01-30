@@ -1,0 +1,1 @@
+javascript:document.querySelectorAll('*').forEach((e)=>e.parentNode.replaceChild(e.cloneNode(true),e))
