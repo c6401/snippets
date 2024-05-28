@@ -1,23 +1,19 @@
-(function(open, setRequestHeader, send) {
-    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-        this.addEventListener("readystatechange", function() {
-            if (this.readyState === 4) {
-                console.log(this);
-            };
-        }, false);
+(function({open, setRequestHeader, send}) {
+    const proto = XMLHttpRequest.prototype;
+    proto.open = function(method, url, async, user, password) {
         const headers = {};
-        XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
+        proto.setRequestHeader = (name, value) => {
             headers[name] = value;
             setRequestHeader.call(this, name, value);
         };
-        XMLHttpRequest.prototype.send = function(body) {
+        proto.send = (body) => {
             console.log(method, url, async, user, password, headers, body);
             console.log(`
 async function () {
   await fetch(\`${url}\`, {
-      method: '${method}',
-      headers: ${JSON.stringify(headers)},
-      body: '${body}'
+    method: '${method}',
+    headers: ${JSON.stringify(headers)},
+    body: '${body}'
   });
 }
             `);
@@ -25,4 +21,4 @@ async function () {
         };
         open.call(this, method, url, async, user, password);
     };
-})(XMLHttpRequest.prototype.open, XMLHttpRequest.prototype.setRequestHeader, XMLHttpRequest.prototype.send);
+})(XMLHttpRequest.prototype);
