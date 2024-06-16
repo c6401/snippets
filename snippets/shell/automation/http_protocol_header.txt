@@ -1,0 +1,1 @@
+HTTP/1.0 200 OK\r\nContent-Type: application/javascript\r\nContent-Length: $(wc -c < ~/urlse.js)\r\n\r\n
