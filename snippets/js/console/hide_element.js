@@ -1,0 +1,1 @@
+x.style.display = 'none'
