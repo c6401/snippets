@@ -1,4 +1,4 @@
-    class         Mixin(models.Model):
+    class ____Mixin(models.Model):
         """
         """
         class Meta:
