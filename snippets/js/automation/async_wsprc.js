@@ -1,0 +1,1 @@
+javascript:(()=>{s=(new WebSocket('ws://localhost:8765'));s.onmessage=m => eval(`(async()=>(${m.data}))()`).then(r=>s.send(r))})()
