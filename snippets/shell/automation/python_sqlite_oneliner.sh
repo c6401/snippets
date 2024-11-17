@@ -1,0 +1,1 @@
+python -c "__import__('sqlite3').connect('____').execute('''select * from ____''').fetchall()"
