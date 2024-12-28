@@ -1,0 +1,1 @@
+curl -s "https://hn.algolia.com/api/v1/items/$1"
