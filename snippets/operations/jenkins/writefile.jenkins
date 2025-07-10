@@ -1,0 +1,2 @@
+        writeFile file: 'deploy/Dockerfile', text: '''\
+'''
