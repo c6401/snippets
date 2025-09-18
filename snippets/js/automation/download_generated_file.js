@@ -1,0 +1,1 @@
+Object.assign(document.createElement('a'), {href: URL.createObjectURL(new Blob(['content'], { type: 'text/plain' })), download: 'test.txt'}).click()
