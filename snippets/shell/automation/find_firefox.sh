@@ -1,1 +1,1 @@
-find ~/.mozilla/firefox ~/snap/firefox/current/.mozilla/firefox ~/.var/app/org.mozilla.firefox/.mozilla/firefox -maxdepth 1 -type d -name '*.default'
+find ~/.mozilla/firefox ~/snap/firefox/current/.mozilla/firefox ~/.var/app/org.mozilla.firefox/.mozilla/firefox ~/Library/Application\ Support/Firefox/Profiles/ -maxdepth 1 -type d -name '*.default' 2>/dev/null
