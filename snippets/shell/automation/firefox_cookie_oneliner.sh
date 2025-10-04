@@ -1,0 +1,1 @@
+python -c "print([i for i in __import__('sqlite3').connect('file:/____/Library/Application Support/Firefox/Profiles/____/places.sqlite?mode=ro&immutable=1',uri=True).execute('''select url from moz_places where url like '%example.com%';''').fetchall()))"
