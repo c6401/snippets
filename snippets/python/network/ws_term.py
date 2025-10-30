@@ -1,22 +1,22 @@
 
 #pip install websockets
-import asyncio as a
+import asyncio
 import websockets
 
-loop = a.get_event_loop()
-
-async def rx(ws):
+async def consumer(ws):
     async for message in ws:
-        print(f"\n< {message}", end='', flush=True)
+        print(message)
 
-async def tx(ws):
+async def producer(ws):
     while True:
-        message = await loop.run_in_executor(None, lambda: input('> '))
+        message = await asyncio.to_thread(input)
         await ws.send(message)
 
-async def term(ws, path):
-    print(f"{ws.remote_address}")
-    await a.gather(a.ensure_future(rx(ws)), a.ensure_future(tx(ws)))
+async def handler(ws):
+    await asyncio.gather(consumer(ws), producer(ws))
 
-loop.run_until_complete(websockets.serve(term, 'localhost', 8080))
-loop.run_forever()
+async def main():
+    async with websockets.serve(handler, 'localhost', 8765):
+        await asyncio.Future()  # Run forever
+
+asyncio.run(main())
