@@ -23,3 +23,4 @@ sudo passwd vagrant
 export DISPLAY=:99
 x11vnc -display :99 -bg -forever -shared -passwd <secret>
 exec dbus-launch --exit-with-session gnome-session &
+=end
