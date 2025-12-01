@@ -5,7 +5,6 @@ return new Promise((resolve, reject) => {
     headers: headers,
     data: body,
     onload: (response) => {
-      console.log(resopnse.responseText)
       resolve({
         ok: response.status >= 200 && response.status < 300,
         status: response.status,
