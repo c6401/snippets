@@ -1,0 +1,7 @@
+[filter "crypt"]
+	smudge = \"/opt/homebrew/bin/git-crypt\" smudge
+	clean = \"/opt/homebrew/bin/git-crypt\" clean
+	required = true
+[diff "crypt"]
+	textconv = \"/opt/homebrew/bin/git-crypt\" diff
+	required = true
