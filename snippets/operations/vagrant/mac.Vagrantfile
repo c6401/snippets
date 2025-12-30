@@ -23,4 +23,7 @@ sudo passwd vagrant
 export DISPLAY=:99
 x11vnc -display :99 -bg -forever -shared -passwd <secret>
 exec dbus-launch --exit-with-session gnome-session &
+
+wget https://nightlies.tbb.torproject.org/nightly-builds/tor-browser-builds/tbb-nightly.20xx.xx.xx/nightly-linux-aarch64/tor-browser-linux-aarch64-tbb-nightly.20xx.xx.xx.tar.xz
+tar -xf tor-browser-linux-aarch64-tbb-nightly.20xx.xx.xx.tar.xz
 =end
