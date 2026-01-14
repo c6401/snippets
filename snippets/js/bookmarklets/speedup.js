@@ -1,1 +1,1 @@
-javascript:(()=>{document.getElementsByTagName('video')[0].playbackRate=2.0})()
+javascript:(()=>{document.getElementsByTagName('video')[0].playbackRate+=.5})()
