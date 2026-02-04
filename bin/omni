@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.8"
+# dependencies = [
+#     "typer",
+# ]
+# ///
+import sys
+from typing import Any, TypeAlias
+
+import typer
+
+app = typer.Typer()
+
+Json: TypeAlias = dict[str, "Json"] | list["Json"] | str | int | float | bool | None
+input = sys.stdin.read()
+
+
+@app.command()
+def unschema():
+    import json
+
+    spec: Any = json.loads(input)
+
+    def on_ref(schema: dict[str, Json]) -> Json:
+        assert "$ref" in schema and isinstance(schema["$ref"], str)
+        path = schema["$ref"].split("/")[1:]
+        ref = spec
+        for p in path:
+            assert isinstance(ref, dict)
+            ref = ref[p]
+        return convert(ref)
+
+    def on_enum(schema: dict[str, Json]) -> Json:
+        assert "enum" in schema and isinstance(schema["enum"], list)
+        return schema["enum"][0]
+
+    def on_string(schema: dict[str, Json]) -> Json:
+        if "enum" in schema:
+            return on_enum(schema)
+        if "const" in schema:
+            return schema["const"]
+        return schema
+
+    def on_array(schema: dict[str, Json]) -> Json:
+        items = schema.get("items")
+        if items:
+            return [convert(items)]
+        return schema
+
+    def on_object(schema: dict[str, Json]) -> Json:
+        properties = schema.get("properties")
+        if properties:
+            assert isinstance(properties, dict)
+            return {k: convert(v) for k, v in properties.items()}
+        return schema
+
+    def on_integer(schema: dict[str, Json]) -> Json:
+        if "enum" in schema:
+            return on_enum(schema)
+        if "const" in schema:
+            return schema["const"]
+        return schema
+
+    def on_number(schema: dict[str, Json]) -> Json:
+        if "enum" in schema:
+            return on_enum(schema)
+        if "const" in schema:
+            return schema["const"]
+        return schema
+
+    def on_boolean(schema: dict[str, Json]) -> Json:
+        if "const" in schema:
+            return schema["const"]
+        return schema
+
+    def on_type(schema: dict[str, Json]) -> Json:
+        if schema["type"] == "object":
+            return on_object(schema)
+        if schema["type"] == "array":
+            return on_array(schema)
+        if schema["type"] == "string":
+            return on_string(schema)
+        if schema["type"] == "integer":
+            return on_integer(schema)
+        if schema["type"] == "number":
+            return on_number(schema)
+        if schema["type"] == "boolean":
+            return on_boolean(schema)
+        return schema
+
+    def on_one_of(schema: dict[str, Json]) -> Json:
+        assert "oneOf" in schema and isinstance(schema["oneOf"], list)
+        return convert(schema["oneOf"][0])
+
+    def on_all_of(schema: dict[str, Json]) -> Json:
+        assert "allOf" in schema and isinstance(schema["allOf"], list)
+        return convert(schema["allOf"][0])
+
+    def on_any_of(schema: dict[str, Json]) -> Json:
+        assert "anyOf" in schema and isinstance(schema["anyOf"], list)
+        return convert(schema["anyOf"][0])
+
+    def on_dict(schema: dict[str, Json]) -> Json:
+        if "$ref" in schema:
+            return on_ref(schema)
+        if "example" in schema:
+            return schema["example"]
+        if "type" in schema:
+            return on_type(schema)
+        if "anyOf" in schema:
+            return on_any_of(schema)
+        if "allOf" in schema:
+            return on_all_of(schema)
+        if "oneOf" in schema:
+            return on_one_of(schema)
+        return schema
+
+    def convert(schema: Json) -> Json:
+        if isinstance(schema, dict):
+            return on_dict(schema)
+        return schema
+
+    print(json.dumps(convert(spec), indent=2))
+
+
+if __name__ == "__main__":
+    app()
