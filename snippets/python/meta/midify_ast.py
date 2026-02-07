@@ -7,12 +7,17 @@ tree = ast.parse(code)
 print(ast.dump(tree, indent=4))
 
 
-def walk_ast(node):
+def walk_ast(node, path=()):
     match node:
         case ast.AST():
-            return type(node)(**{k: walk_ast(v) for k, v in ast.iter_fields(node)})
+            return type(node)(
+                **{
+                    k: walk_ast(v, path + (type(node), k))
+                    for k, v in ast.iter_fields(node)
+                }
+            )
         case list():
-            return [walk_ast(x) for x in node]
+            return [walk_ast(x, path + (list,)) for x in node]
     return node
 
 
