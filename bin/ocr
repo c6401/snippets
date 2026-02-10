@@ -1,0 +1,39 @@
+#!/usr/bin/env swift
+import Foundation
+import Vision
+
+let paths = CommandLine.arguments.dropFirst().map(URL.init(fileURLWithPath:))
+guard !paths.isEmpty else {
+  fputs("usage: ocr /path/to/image1.jpg [/path/to/image2.png ...]\n", stderr)
+  exit(1)
+}
+
+func process(_ path: URL) async -> [String]? {
+  var req = RecognizeTextRequest()
+  req.automaticallyDetectsLanguage = true
+  req.usesLanguageCorrection = true
+  req.recognitionLevel = .accurate
+  return (try? await req.perform(on: path))?
+    .compactMap { $0.topCandidates(1).first?.string }
+}
+
+Task {
+  let results = await withTaskGroup(of: (Int, URL, [String]?).self) { group in
+    for (i, path) in paths.enumerated() {
+      group.addTask { (i, path, await process(path)) }
+    }
+    var out = [(Int, URL, [String]?)]()
+    for await r in group { out.append(r) }
+    return out
+  }
+
+  var ok = true
+  for (i, path, texts) in results.sorted(by: { $0.0 < $1.0 }) {
+    if i != 0 { print() }
+    if let texts { texts.forEach { print($0) } }
+    else { fputs("Failed to process \(path)\n", stderr); ok = false }
+  }
+  exit(ok ? 0 : 1)
+}
+
+dispatchMain()
