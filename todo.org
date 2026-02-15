@@ -1,2 +1,0 @@
-* rename .jinja2 to .j2 files
-* maybe move frameworks in python into one folder
