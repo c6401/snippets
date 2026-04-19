@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+import email
+import imaplib
+import json
+import os
+import sys
+from email.header import decode_header
+from email.utils import parseaddr
+from pathlib import Path
+
+os.environ.update(
+    dict(ln.split("=") for ln in Path(".env").read_text().splitlines() if ln)
+)
+
+
+def get_credentials():
+    user = os.environ["GMAIL_ADDRESS"]
+    app_password = os.environ["GMAIL_APP_PASSWORD"]
+    return user, app_password
+
+
+def decode_email_header(header_value: str) -> str:
+    decoded_bytes, encoding = decode_header(header_value)[0]
+    if not isinstance(decoded_bytes, bytes):
+        return str(decoded_bytes)
+    return decoded_bytes.decode(encoding if encoding else "utf-8", errors="replace")
+
+
+def get_mail_list(max_results: int = 10) -> list[dict]:
+    user, app_password = get_credentials()
+
+    mail = imaplib.IMAP4_SSL("imap.gmail.com")
+    mail.login(user, app_password)
+    mail.select("inbox")
+
+    status, messages = mail.search(None, "ALL")
+    email_ids = messages[0].split()
+
+    results = []
+
+    for e_id in email_ids[-max_results:]:
+        # BODY.PEEK prevents marking the email as "Read"
+        _, msg_data = mail.fetch(e_id, "(BODY.PEEK[HEADER.FIELDS (SUBJECT FROM)])")
+
+        for response_part in msg_data:
+            if not isinstance(response_part, tuple):
+                continue
+
+            msg = email.message_from_bytes(response_part[1])
+            subject = decode_email_header(msg.get("Subject", "No Subject"))
+            from_str = decode_email_header(msg.get("From", "Unknown Sender"))
+            sender_name, sender_email = parseaddr(from_str)
+
+            results.append(
+                {"subject": subject, "name": sender_name, "email": sender_email}
+            )
+
+    mail.logout()
+    return results
+
+
+if __name__ == "__main__":
+    print("Fetching latest emails...\n")
+    emails = get_mail_list(max_results=5)
+    if len(sys.argv) > 1:
+        emails = eval(sys.argv[1], globals(), locals())
+    print(json.dumps(emails, indent=2))
