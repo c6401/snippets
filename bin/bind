@@ -1,0 +1,14 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["pynput"]
+# ///
+import subprocess
+import sys
+
+from pynput import keyboard
+
+pairs = zip(sys.argv[1::2], sys.argv[2::2])
+hotkeys = {k: lambda c=c: subprocess.Popen(c, shell=True) for k, c in pairs}
+
+with keyboard.GlobalHotKeys(hotkeys) as handler:
+    handler.join()
