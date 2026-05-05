@@ -5,7 +5,7 @@
 import subprocess
 import sys
 
-from pynput import keyboard
+from pynput import keyboard  # type: ignore
 
 pairs = zip(sys.argv[1::2], sys.argv[2::2])
 hotkeys = {k: lambda c=c: subprocess.Popen(c, shell=True) for k, c in pairs}
