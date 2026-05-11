@@ -1,0 +1,50 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["pynput"]
+# ///
+
+import logging
+import subprocess
+import sys
+
+from pynput import keyboard  # type: ignore
+
+patterns = [list(i) for i in sys.argv[1::2]]
+cmds = sys.argv[2::2]
+tree = {}
+
+
+def set_path(tree: dict, seq: list[str], val: str):
+    node = tree
+    for char in seq[:-1]:
+        node = node.setdefault(char, {})
+    node[seq[-1]] = val
+
+
+def get_path(tree: dict, seq: list[str]) -> str | None:
+    node = tree
+    for char in seq:
+        node = node.get(char)
+        if not isinstance(node, dict):
+            return node
+
+
+for pattern, cmd in zip(patterns, cmds):
+    set_path(tree, pattern[::-1], cmd)
+
+buffer = []
+
+
+def on_press(key):
+    global buffer
+
+    buffer.append(getattr(key, "char", None))
+    buffer = buffer[-30:]
+
+    if node := get_path(tree, buffer[::-1]):
+        logging.info(node)
+        subprocess.run(node, shell=True)
+
+
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
