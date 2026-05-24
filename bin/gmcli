@@ -61,8 +61,9 @@ def get_mail_list(max_results: int = 10) -> list[dict]:
 
 
 if __name__ == "__main__":
-    print("Fetching latest emails...\n")
-    emails = get_mail_list(max_results=5)
-    if len(sys.argv) > 1:
-        emails = eval(sys.argv[1], globals(), locals())
-    print(json.dumps(emails, indent=2))
+    expr, limit, *_ = sys.argv[1:] + [None, None]
+    limit = int(limit or 5)
+    ls = get_mail_list(max_results=limit)
+    if expr:
+        ls = eval(expr, globals(), locals())
+    print(json.dumps(ls, indent=2))
