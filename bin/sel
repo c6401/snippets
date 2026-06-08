@@ -1,135 +1,74 @@
 #!/usr/bin/env python3
-"""
-A simple gui list selection tool with filtering capability.
-"""
-
+"""A simple gui list selection tool with filtering capability."""
+import os
+import platform
 import sys
 import tkinter as tk
 
 
-class Sel:
-    def __init__(self, items):
-        self.items = items
-        self.filtered = items.copy()
-        self.selected = None
+def sel(items):
+    root = tk.Tk()
+    root.geometry("600x400")
+    root.attributes("-topmost", True)
+    if platform.system() == "Darwin":
+        os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of every process whose unix id is {} to true' '''.format(os.getpid()))
 
-        self.root = tk.Tk()
-        self.root.title("sel")
-        self.root.geometry("600x400")
+    var = tk.StringVar()
+    result = None
+    filtered = items[:]
 
-        self.search_var = tk.StringVar()
-        self.search_var.trace_add("write", self.on_search_change)
-        self.input = tk.Entry(
-            self.root, textvariable=self.search_var, font=("Courier New", 12)
-        )
-        self.input.pack(fill=tk.X, padx=5, pady=5)
-        self.input.focus()
+    entry = tk.Entry(root, textvariable=var, font=("Courier New", 12))
+    entry.pack(fill=tk.X, padx=5, pady=5)
 
-        frame = tk.Frame(self.root)
-        frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+    frame = tk.Frame(root)
+    frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+    sb = tk.Scrollbar(frame)
+    sb.pack(side=tk.RIGHT, fill=tk.Y)
+    lb = tk.Listbox(frame, yscrollcommand=sb.set, font=("Courier New", 11))
+    lb.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    sb.config(command=lb.yview)
 
-        scrollbar = tk.Scrollbar(frame)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    def refresh(*_):
+        q = var.get().lower()
+        filtered = [i for i in items if all(w in i.lower() for w in q.split())]
+        lb.delete(0, tk.END)
+        for item in filtered[0]:
+            lb.insert(tk.END, item)
+        if filtered:
+            lb.selection_set(0)
+            lb.activate(0)
 
-        self.listbox = tk.Listbox(
-            frame, yscrollcommand=scrollbar.set, font=("Courier New", 11)
-        )
-        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        scrollbar.config(command=self.listbox.yview)
+    def move(delta, *_):
+        cur = lb.curselection()
+        n = (cur[0] if cur else -1) + delta
+        if 0 <= n < len(filtered):
+            lb.selection_clear(0, tk.END)
+            lb.selection_set(n)
+            lb.activate(n)
+            lb.see(n)
 
-        self.update_listbox()
+    def select(*_):
+        nonlocal result
+        cur = lb.curselection()
+        if cur:
+            result = filtered[cur[0]]
+        root.quit()
 
-        self.input.bind("<Return>", self.on_select)
-        self.input.bind("<Escape>", lambda e: self.root.quit())
-        self.input.bind("<Down>", self.on_down)
-        self.input.bind("<Up>", self.on_up)
-        self.listbox.bind("<Return>", self.on_select)
-        self.listbox.bind("<Double-Button-1>", self.on_select)
+    var.trace_add("write", refresh)
+    entry.bind("<Return>", select)
+    entry.bind("<Escape>", lambda *_: root.quit())
+    entry.bind("<Down>", lambda *_: move(1))
+    entry.bind("<Up>", lambda *_: move(-1))
+    lb.bind("<Return>", select)
+    lb.bind("<Double-Button-1>", select)
 
-    def update_listbox(self):
-        self.listbox.delete(0, tk.END)
-        for i, item in enumerate(self.filtered):
-            self.listbox.insert(tk.END, item)
-
-        if self.filtered:
-            self.listbox.selection_set(0)
-            self.listbox.activate(0)
-
-    def on_search_change(self, *args):
-        query = self.search_var.get().lower()
-        self.filtered = [
-            item
-            for item in self.items
-            if all(q in item.lower() for q in query.split(" "))
-        ]
-        self.update_listbox()
-
-    def on_down(self, event):
-        if not self.filtered:
-            return
-
-        current = self.listbox.curselection()
-        if not current:
-            self.listbox.selection_set(0)
-            self.listbox.activate(0)
-            return
-
-        idx = current[0]
-        if idx == len(self.filtered) - 1:
-            return
-
-        self.listbox.selection_clear(0, tk.END)
-        self.listbox.selection_set(idx + 1)
-        self.listbox.activate(idx + 1)
-        self.listbox.see(idx + 1)
-
-    def on_up(self, event):
-        if not self.filtered:
-            return
-
-        current = self.listbox.curselection()
-        if not current:
-            return
-
-        idx = current[0]
-        if idx == 0:
-            return
-
-        self.listbox.selection_clear(0, tk.END)
-        self.listbox.selection_set(idx - 1)
-        self.listbox.activate(idx - 1)
-        self.listbox.see(idx - 1)
-
-    def on_select(self, event):
-        selection = self.listbox.curselection()
-        if selection:
-            self.selected = self.filtered[selection[0]]
-        self.root.quit()
-
-    def run(self):
-        self.root.mainloop()
-        self.root.destroy()
-        return self.selected
-
-
-def main():
-    lines = []
-    if not sys.stdin.isatty():
-        lines = sys.stdin.read().strip().split("\n")
-        lines.sort()
-
-    if not lines:
-        sys.exit(1)
-
-    app = Sel(lines)
-    result = app.run()
-
-    if result:
-        print(result)
-        sys.exit(0)
-
-    sys.exit(1)
+    refresh()
+    entry.focus()
+    root.mainloop()
+    root.destroy()
+    return result
 
 
 if __name__ == "__main__":
-    main()
+    lines = sorted(sys.stdin.read().strip().split("\n")) if not sys.stdin.isatty() else []
+    print(sel(lines))
