@@ -6,41 +6,23 @@
 import logging
 import subprocess
 import sys
-from collections import deque
-from typing import Iterable
 
 from pynput import keyboard  # type: ignore
 
-buffer = deque(maxlen=30)
-tree = {}
-
-
-def set_path(tree: dict, seq: list[str], val: str):
-    node = tree
-    for char in seq[:-1]:
-        node = node.setdefault(char, {})
-    node[seq[-1]] = val
-
-
-def get_path(tree: dict, seq: Iterable[str]) -> str | None:
-    node = tree
-    for char in seq:
-        node = node.get(char)
-        if not isinstance(node, dict):
-            return node
-
-
-for seq, cmd in zip(sys.argv[1::2], sys.argv[2::2]):
-    set_path(tree, list(seq)[::-1], cmd)
+seqs = sorted(zip(sys.argv[1::2], sys.argv[2::2]), key=lambda p: len(p[0]))
+buffer = ""
 
 
 def on_press(key):
-    buffer.appendleft(getattr(key, "char", None))
+    global buffer
+    buffer = (buffer + (getattr(key, "char", None) or ""))[-30:]
 
-    if node := get_path(tree, buffer):
-        logging.info(node)
-        subprocess.run(node, shell=True)
-        buffer.clear()
+    for seq, cmd in seqs:
+        if buffer.endswith(seq):
+            logging.info(cmd)
+            subprocess.run(cmd, shell=True)
+            buffer = ""
+            break
 
 
 with keyboard.Listener(on_press=on_press) as listener:
