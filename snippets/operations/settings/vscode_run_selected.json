@@ -1,0 +1,13 @@
+[
+  {
+    "key": "shift+enter",
+    "command": "runCommands",
+    "args": {
+      "commands": [
+        "expandLineSelection",
+        "workbench.action.terminal.runSelectedText", "cancelSelection"
+      ]
+    },
+    "when": "editorTextFocus"
+  }
+]
