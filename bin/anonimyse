@@ -1,0 +1,56 @@
+from __future__ import annotations
+
+import ast
+import hashlib
+import sys
+
+
+def id_map(prefix: str, hash_mode: bool):
+    seen: dict[str, str] = {}
+
+    def rename(original: str) -> str:
+        if original not in seen:
+            suffix = hashlib.sha256(original.encode()).hexdigest()[:8] if hash_mode else str(len(seen) + 1)
+            seen[original] = prefix + suffix
+        return seen[original]
+
+    return rename
+
+
+def anonymize_source(source: str, hash_mode: bool = False) -> str:
+    tree = ast.parse(source)
+    class_ids, key_ids, str_ids = (id_map(p, hash_mode) for p in ("Class", "Key", "STR_"))
+
+    class_names, key_names, fstrings = set(), set(), set()
+    for node in ast.walk(tree):
+        match node:
+            case ast.ClassDef(name=name, body=body):
+                class_names.add(name)
+                for item in body:
+                    match item:
+                        case ast.AnnAssign(target=ast.Name() as t) | ast.Assign(targets=[ast.Name() as t]):
+                            key_names.add(t.id)
+                            t.id = key_ids(t.id)
+            case ast.Attribute(attr=attr, ctx=ast.Store()) if not attr.startswith("__"):
+                key_names.add(attr)
+            case ast.JoinedStr(values=values):
+                fstrings |= {id(v) for v in values if isinstance(v, ast.Constant)}
+
+    for node in ast.walk(tree):
+        match node:
+            case ast.Constant(value=str()) if id(node) not in fstrings:
+                node.value = str_ids(node.value)
+            case ast.ClassDef():
+                node.name = class_ids(node.name)
+            case ast.Name(id=name) if name in class_names:
+                node.id = class_ids(name)
+            case ast.Attribute(attr=attr) if attr in key_names and not attr.startswith("__"):
+                node.attr = key_ids(attr)
+    return ast.unparse(tree)
+
+
+if __name__ == "__main__":
+    hash_mode = "--hash" in sys.argv
+    path = next(a for a in sys.argv[1:] if not a.startswith("--"))
+    with open(path) as f:
+        print(anonymize_source(f.read(), hash_mode))
