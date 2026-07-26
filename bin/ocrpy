@@ -1,0 +1,55 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["pyobjc-framework-Vision"]
+# ///
+from __future__ import annotations
+
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+import Vision  # type: ignore
+from Foundation import NSURL  # type: ignore
+
+
+def process(path: Path) -> list[str] | None:
+    url = NSURL.fileURLWithPath_(str(path.resolve()))
+    handler = Vision.VNImageRequestHandler.alloc().initWithURL_options_(url, {})
+
+    request = Vision.VNRecognizeTextRequest.alloc().init()
+    request.setAutomaticallyDetectsLanguage_(True)
+    request.setUsesLanguageCorrection_(True)
+    request.setRecognitionLevel_(Vision.VNRequestTextRecognitionLevelAccurate)
+
+    if not handler.performRequests_error_([request], None):
+        return None
+
+    return [
+        str(candidates[0].string())
+        for obs in (request.results() or [])
+        if (candidates := obs.topCandidates_(1))
+    ]
+
+
+def main() -> None:
+    args = sys.argv[1:]
+    paths = [Path(a) for a in args]
+
+    with ThreadPoolExecutor() as pool:
+        results = list(pool.map(process, paths))
+
+    ok = True
+    for i, (path, texts) in enumerate(zip(paths, results)):
+        if i:
+            print()
+        if texts is not None:
+            for t in texts:
+                print(t)
+        else:
+            print(f"Failed to process {path}", file=sys.stderr)
+            ok = False
+
+    sys.exit(0 if ok else 1)
+
+
+main()
