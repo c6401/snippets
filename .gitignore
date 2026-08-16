@@ -2,3 +2,4 @@ private/
 .mypy_cache/
 todo*
 .vscode/
+.env
