@@ -1,15 +1,27 @@
-(function(XHR) {
-  const {open, setRequestHeader, send} = XHR.prototype;
-  XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-    const headers = {};
-    XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
-      headers[name] = value;
-      setRequestHeader.call(this, name, value);
-    };
-    XMLHttpRequest.prototype.send = function(body) {
-      console.log(JSON.stringify({method, url, async, user, password, headers, body}));
-      send.call(this, body);
-    };
-    open.call(this, method, url, async, user, password);
+(() => {
+  const log = (window.__ajaxLog = []);
+  const record = (e) => (log.push(e), console.log('[ajax]', e));
+
+  const nativeFetch = fetch;
+  window.fetch = async (url, opts = {}) => {
+    const res = await nativeFetch(url, opts);
+    record({ method: 'GET', url: url.url || url, ...opts, status: res.status, response: await res.clone().text() });
+    return res;
   };
-})(XMLHttpRequest);
+
+  const p = XMLHttpRequest.prototype;
+  const { open, send, setRequestHeader } = p;
+  p.open = function (method, url, ...rest) {
+    this._e = { url, method, headers: {} };
+    return open.call(this, method, url, ...rest);
+  };
+  p.setRequestHeader = function (key, value) {
+    this._e.headers[key] = value;
+    return setRequestHeader.call(this, key, value);
+  };
+  p.send = function (body) {
+    this._e.body = body;
+    this.addEventListener('loadend', () => record({ ...this._e, status: this.status, response: this.responseText }));
+    return send.call(this, body);
+  };
+})();
