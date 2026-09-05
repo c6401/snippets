@@ -1,7 +1,8 @@
+javascript:
 (() => {
   const log = (window.__ajaxLog = []);
   const record = (e) => (log.push(e), console.log('[ajax]', e));
-  window.dump = () => Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([JSON.stringify(log)])), download: 'ajax-log.json' }).click();
+  window.dump = () => Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([JSON.stringify(log, null, 2)])), download: 'ajax-log.json' }).click();
 
   const nativeFetch = fetch;
   window.fetch = async (url, opts) => {
