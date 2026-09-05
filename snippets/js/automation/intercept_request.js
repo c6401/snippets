@@ -1,27 +1,24 @@
 (() => {
   const log = (window.__ajaxLog = []);
   const record = (e) => (log.push(e), console.log('[ajax]', e));
+  window.dump = () => Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([JSON.stringify(log)])), download: 'ajax-log.json' }).click();
 
   const nativeFetch = fetch;
-  window.fetch = async (url, opts = {}) => {
+  window.fetch = async (url, opts) => {
     const res = await nativeFetch(url, opts);
     record({ method: 'GET', url: url.url || url, ...opts, status: res.status, response: await res.clone().text() });
     return res;
   };
 
-  const p = XMLHttpRequest.prototype;
-  const { open, send, setRequestHeader } = p;
-  p.open = function (method, url, ...rest) {
-    this._e = { url, method, headers: {} };
-    return open.call(this, method, url, ...rest);
-  };
-  p.setRequestHeader = function (key, value) {
-    this._e.headers[key] = value;
-    return setRequestHeader.call(this, key, value);
-  };
-  p.send = function (body) {
-    this._e.body = body;
-    this.addEventListener('loadend', () => record({ ...this._e, status: this.status, response: this.responseText }));
-    return send.call(this, body);
+  const { open, send, setRequestHeader } = XMLHttpRequest.prototype;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    const e = { method, url, headers: {} };
+    this.setRequestHeader = (k, v) => (e.headers[k] = v, setRequestHeader.call(this, k, v));
+    this.send = (b) => {
+      e.body = b;
+      this.addEventListener('loadend', () => record({ ...e, status: this.status, response: this.responseText }));
+      return send.call(this, b);
+    };
+    return open.apply(this, arguments);
   };
 })();
