@@ -1,0 +1,42 @@
+{#-
+  ./jtd_infer.py User sample.json > user.jtd.json
+  minijinja-cli -a none -D name=User -D url=/api/users client.ts.j2 user.jtd.json > user-api.service.ts
+-#}
+{%- set TYPES = {'boolean': 'boolean', 'string': 'string', 'timestamp': 'string',
+                 'float32': 'number', 'float64': 'number', 'int8': 'number', 'uint8': 'number',
+                 'int16': 'number', 'uint16': 'number', 'int32': 'number', 'uint32': 'number'} -%}
+
+{%- macro ts(s) -%}
+{%- if s.ref is defined -%}{{ s.ref }}
+{%- elif s.elements is defined -%}{% if s.elements.nullable %}({{ ts(s.elements) }})[]{% else %}{{ ts(s.elements) }}[]{% endif %}
+{%- elif s.values is defined -%}Record<string, {{ ts(s.values) }}>
+{%- elif s.enum is defined -%}{% for e in s.enum %}'{{ e }}'{{ ' | ' if not loop.last }}{% endfor %}
+{%- elif s.type is defined -%}{{ TYPES[s.type] | default('unknown') }}
+{%- else -%}unknown
+{%- endif -%}
+{{- ' | null' if s.nullable -}}
+{%- endmacro -%}
+
+{%- set ROOT = {'elements': elements} if elements is defined else {'ref': ref} -%}
+// Generated from JTD. Do not edit.
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+{% for n, d in definitions | items %}
+export interface {{ n }} {
+{%- for k, v in d.properties | default({}) | items %}
+  {{ k }}: {{ ts(v) }};
+{%- endfor %}
+{%- for k, v in d.optionalProperties | default({}) | items %}
+  {{ k }}?: {{ ts(v) }};
+{%- endfor %}
+}
+{% endfor %}
+@Injectable({ providedIn: 'root' })
+export class {{ name }}ApiService {
+  private readonly http = inject(HttpClient);
+
+  {{ op | default('get') }}(): Observable<{{ ts(ROOT) }}> {
+    return this.http.{{ method | default('get') }}<{{ ts(ROOT) }}>('{{ url }}');
+  }
+}
