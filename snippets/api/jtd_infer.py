@@ -5,7 +5,6 @@ JSON sample(s) -> JTD (RFC 8927). Root type is named by the first argument.
     ./jtd_infer.py User sample.json [more.json ...] > user.jtd.json
 '''
 import json, re, sys
-from functools import reduce
 from pathlib import Path
 
 TS = re.compile(r'\d{4}-\d\d-\d\dT[\d:.]+(Z|[+-][\d:]+)$')
@@ -20,25 +19,60 @@ def infer(v):
         case float(): return {'type': 'float64'}
         case str(): return {'type': 'timestamp' if TS.match(v) else 'string'}
         case []: return {'elements': {}}
-        case [*items]: return {'elements': reduce(merge, map(infer, items))}
+        case [*items]: return {'elements': merge_all([infer(i) for i in items])}
         case dict(): return {'properties': {k: infer(x) for k, x in v.items()}}
     return {}
 
 
 def merge(a, b):
-    n = {'nullable': True} if a.get('nullable') or b.get('nullable') else {}
-    a = {k: v for k, v in a.items() if k != 'nullable'}
-    b = {k: v for k, v in b.items() if k != 'nullable'}
-    if not a or not b or a == b:
-        return (a or b) | n
-    match a, b:
-        case {'type': x}, {'type': y}:
-            return ({'type': WIDE[frozenset((x, y))]} if frozenset((x, y)) in WIDE else {}) | n
-        case {'elements': x}, {'elements': y}:
-            return {'elements': merge(x, y)} | n
-    if _obj(a) and _obj(b):
-        return _props(a, b) | n
-    return n
+    return merge_all([a, b])
+
+
+def merge_all(schemas):
+    """Merge every schema in one pass. Pairwise folding is quadratic; this is linear."""
+    null = any(s.get('nullable') for s in schemas)
+    bare = [{k: v for k, v in s.items() if k != 'nullable'} for s in schemas]
+    return _merge_all([s for s in bare if s]) | ({'nullable': True} if null else {})
+
+
+def _merge_all(ss):
+    if not ss:
+        return {}
+    if len(ss) == 1:
+        return ss[0]
+    if all(_obj(s) for s in ss):
+        return _props_all(ss)
+    if all('elements' in s for s in ss):
+        return {'elements': merge_all([s['elements'] for s in ss])}
+    if all('ref' in s for s in ss):
+        return ss[0] if len({s['ref'] for s in ss}) == 1 else {}
+    if all('type' in s for s in ss):
+        return _types_all([s['type'] for s in ss])
+    return {}
+
+
+def _types_all(types):
+    out = types[0]
+    for t in types[1:]:
+        if t == out:
+            continue
+        if frozenset((out, t)) not in WIDE:
+            return {}
+        out = WIDE[frozenset((out, t))]
+    return {'type': out}
+
+
+def _props_all(ss):
+    groups, seen = {}, {}
+    for s in ss:
+        for grp in ('properties', 'optionalProperties'):
+            for k, v in s.get(grp, {}).items():
+                groups.setdefault(k, []).append(v)
+                if grp == 'properties':
+                    seen[k] = seen.get(k, 0) + 1
+    req = {k: merge_all(vs) for k, vs in groups.items() if seen.get(k) == len(ss)}
+    opt = {k: merge_all(vs) for k, vs in groups.items() if seen.get(k) != len(ss)}
+    return {'properties': req} | ({'optionalProperties': opt} if opt else {})
 
 
 def hoist(s, defs, path):
@@ -54,16 +88,6 @@ def hoist(s, defs, path):
 
 def _obj(s):
     return 'properties' in s or 'optionalProperties' in s
-
-
-def _props(a, b):
-    ap, bp = a.get('properties', {}), b.get('properties', {})
-    av, bv = ap | a.get('optionalProperties', {}), bp | b.get('optionalProperties', {})
-    keys = dict.fromkeys([*av, *bv])
-    req = {k: merge(av[k], bv[k]) for k in keys if k in ap and k in bp}
-    opt = {k: merge(av[k], bv[k]) if k in av and k in bv else av.get(k) or bv.get(k)
-           for k in keys if k not in req}
-    return {'properties': req} | ({'optionalProperties': opt} if opt else {})
 
 
 def _pascal(s):
@@ -94,9 +118,11 @@ def _uniq(names, body, defs):
 
 
 def jtd(name, samples):
+    schemas = []
+    for i, sample in enumerate(samples):
+        schemas.append(infer(sample))
     defs = {}
-    root = hoist(reduce(merge, map(infer, samples)), defs, (name,))
-    return root | {'definitions': defs}
+    return hoist(merge_all(schemas), defs, (name,)) | {'definitions': defs}
 
 
 if __name__ == '__main__':
